@@ -47,7 +47,7 @@ CayeyRequestManager = REQUESTMANAGER(log,maxrequest);
 %% Read in map for background of graph (use file name of image for map)
 % and plot the base location
 figure
-MAP=imread('CayeyPR.png'); image(MAP);
+MAP=imread('Sulawesi.png'); image(MAP);
 hold on
 plot(base(1,1),base(1,2),'ro','MarkerFaceColor','r')
 hold on
