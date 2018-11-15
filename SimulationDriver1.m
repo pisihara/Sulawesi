@@ -1,5 +1,6 @@
 %% Goal:  To illustrate object oriented programming in MATLAB 
 %%         using a simple UAV fleet assignment model
+%%        Editing will be done using git from the command linegit
 
 clear all; close all; format long;
 
