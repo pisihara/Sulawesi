@@ -7,8 +7,8 @@
 clear all; close all; format long;
 
 %% Parameters
-lengthSimulation=5;    % Number of time steps in minutes
-requestprob=.7; % probability that a request occurs each minute
+lengthSimulation=10;    % Number of time steps in minutes
+requestprob=.5; % probability that a request occurs each minute
 numZones = 13;  % number of request zones
 base = [578,398];    % Location of the base (x,y) on the simulation map
 km2pixRatio = 1.609/90; % Number of pixels in one kilometer on the map (converted from miles)
