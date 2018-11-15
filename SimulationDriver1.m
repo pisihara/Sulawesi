@@ -6,7 +6,7 @@
 clear all; close all; format long;
 
 %% Parameters
-lengthSimulation=30;    % Number of time steps in minutes
+lengthSimulation=10;    % Number of time steps in minutes
 requestprob=.7; % probability that a request occurs each minute
 numZones = 13;  % number of request zones
 base = [578,398];    % Location of the base (x,y) on the simulation map
