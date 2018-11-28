@@ -17,7 +17,7 @@ classdef UAVMANAGER < handle
         % Constructor 
         
         function obj = UAVMANAGER(x,y,batterylife,zone,requestID,speed)
-            obj.UAVlog(:,1) = x; % initial x coordinate of UAVs
+          obj.UAVlog(:,1) = x; % initial x coordinate of UAVs
           obj.UAVlog(:,2) = y; % initial y coordinates of UAVs
           obj.UAVlog(:,3) = batterylife; % battery life of UAVs (minutes)
           obj.UAVlog(:,4) = zone; % zone of destination of UAVs
@@ -42,16 +42,22 @@ classdef UAVMANAGER < handle
          
         function obj= updateUAVpositions(obj,REQUESTMANAGER,fleetsize)
             RM=REQUESTMANAGER;
-            for i=1:fleetsize
-                                                           
+            for i=1:fleetsize                                    
                 if  obj.UAVlog(i,5)~= 0  % UAV has an active request
                   x1= obj.UAVlog(i,1);  %x-coord of UAV
                   y1= obj.UAVlog(i,2); % y-coord of UAV
                   x2=RM.requestlog(obj.UAVlog(i,5),4); %x-coord of drop-off
                   y2=RM.requestlog(obj.UAVlog(i,5),5); % y-ccord of drop off
                   d=((x2-x1)^2+(y2-y1)^2)^.5;
-                  obj.UAVlog(i,1) = x1 + (90/1.609)*(1/60)*(x2-x1)*obj.UAVlog(i,6)/d; %advance UAV towards drop-off 
-                  obj.UAVlog(i,2) = y1 + (90/1.609)*(1/60)*(y2-y1)*obj.UAVlog(i,6)/d;
+                  dx = (100/1.8204)*(1/60)*(x2-x1)*obj.UAVlog(i,6)/d;
+                  dy = (100/1.8204)*(1/60)*(y2-y1)*obj.UAVlog(i,6)/d;
+                  if sqrt(dx^2+dy^2) < d
+                      obj.UAVlog(i,1) = x1 + dx;
+                      obj.UAVlog(i,2) = y1 + dy;
+                  else 
+                      obj.UAVlog(i,1) = x2;
+                      obj.UAVlog(i,2) = y2;
+                  end
                 end
             end
         end
