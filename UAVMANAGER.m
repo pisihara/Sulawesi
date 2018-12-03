@@ -24,7 +24,7 @@ classdef UAVMANAGER < handle
           obj.UAVlog(:,4) = zone; % zone of destination of UAVs
           obj.UAVlog(:,5) = requestID; % requests assigned to UAVs
           obj.UAVlog(:,6) = speed; % speed in km/hr of UAVs
-          obj.UAVlog(:,7) = park; %remaining time for UAV to be parked
+          obj.UAVlog(:,7) = park; %remaining time for UAV to be parked 
         end
         
         function [obj,RM]= assignUAVs(obj,REQUESTMANAGER,reqid,fleetsize)
@@ -56,19 +56,26 @@ classdef UAVMANAGER < handle
                   d3=d+d2;
                   dx = (100/1.8204)*(1/60)*(x2-x1)*obj.UAVlog(i,6)/d;
                   dy = (100/1.8204)*(1/60)*(y2-y1)*obj.UAVlog(i,6)/d;
-                  if sqrt(dx^2+dy^2) < d %if the total distance is is greater than the step distance, move one step
-                      obj.UAVlog(i,1) = x1 + dx; 
+                  if obj.UAVlog(i,3)*(100/1.8204)*(obj.UAVlog(i,6)/60) < d3
+                      obj.UAVlog(i,4)=RM.requestlog(obj.UAVlog(i,5),8); %not finished
+                      obj.UAVlog(i )=RM.requestlog(obj.UAVlog(i,5),9); %this is where we stopped
+                  else
+                      if sqrt(dx^2+dy^2) < d
+                      obj.UAVlog(i,1) = x1 + dx;
                       obj.UAVlog(i,2) = y1 + dy;
-                  else %If total distance is less than step distance, move to the final coordinates
+                     else 
                       obj.UAVlog(i,1) = x2;
                       obj.UAVlog(i,2) = y2;
-                      obj.UAVlog(i,7) = obj.UAVlog(i,7)-1; %Decrease the parking variable by one minute each time step
-                      if obj.UAVlog(i,7) == 0 %Park variable = 0
-                          obj.UAVlog(i,5) = 0; %UAV can take new requests
-                          obj.UAVlog(i,7) = 5; %Park variable reset
+                      obj.UAVlog(i,7) = obj.UAVlog(i,7)-1;
+                      if obj.UAVlog(i,7) == 0
+                          obj.UAVlog(i,5) = 0;
+                          obj.UAVlog(i,7) = 5;
                       end
+                      
                   end
-                  obj.UAVlog(i,3) = obj.UAVlog(i,3)-1; %Decrease the battery after every time step
+                  obj.UAVlog(i,3) = obj.UAVlog(i,3)-1;
+                 % if obj.UAVlog(i,3)*(100/1.8204)*(obj.UAVlog(i,6)/60);
+                  end 
                 end
             end
         end
