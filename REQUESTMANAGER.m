@@ -22,6 +22,8 @@ classdef REQUESTMANAGER
             obj.requestlog(reqid,5) = zone(3); % y coord of zone drop-off
             obj.requestlog(reqid,6) = 0; % 0=new request is active; 1=completed; -1=expired
             obj.requestlog(reqid,7) = 0; % UAV assigned to the request
+            obj.requestlog(reqid,8) = zone(4); %x-coordinate of base
+            obj.requestlog(reqid,9) = zone(5); %y-coordinate of base
         end
     end
 end
