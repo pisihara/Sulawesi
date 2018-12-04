@@ -46,20 +46,19 @@ classdef UAVMANAGER < handle
             RM=REQUESTMANAGER;
             for i=1:fleetsize                                    
                 if  obj.UAVlog(i,5)~= 0  % UAV has an active request
-                  
+                  x2=RM.requestlog(obj.UAVlog(i,5),4); %x-coord of drop-off
+                  y2=RM.requestlog(obj.UAVlog(i,5),5); % y-coord of drop off
                   x1= obj.UAVlog(i,1);  %x-coord of UAV
                   y1= obj.UAVlog(i,2); % y-coord of UAV
-                  x2=RM.requestlog(obj.UAVlog(i,5),4); %x-coord of drop-off
-                  y2=RM.requestlog(obj.UAVlog(i,5),5); % y-ccord of drop off
                   d=((x2-x1)^2+(y2-y1)^2)^.5;
                   d2=((1050-x2)^2+(1700-y2)^2)^.5;
                   d3=d+d2;
-                  dx = (100/1.8204)*(1/60)*(x2-x1)*obj.UAVlog(i,6)/d;
-                  dy = (100/1.8204)*(1/60)*(y2-y1)*obj.UAVlog(i,6)/d;
                   if obj.UAVlog(i,3)*(100/1.8204)*(obj.UAVlog(i,6)/60) < d3
-                      obj.UAVlog(i,4)=RM.requestlog(obj.UAVlog(i,5),8); %not finished
-                      obj.UAVlog(i )=RM.requestlog(obj.UAVlog(i,5),9); %this is where we stopped
-                  else
+                      x2=RM.requestlog(obj.UAVlog(i,5),8); 
+                      y2=RM.requestlog(obj.UAVlog(i,5),9);
+                      d=((x2-x1)^2+(y2-y1)^2)^.5;
+                      dx = (100/1.8204)*(1/60)*(x2-x1)*obj.UAVlog(i,6)/d;
+                      dy = (100/1.8204)*(1/60)*(y2-y1)*obj.UAVlog(i,6)/d;
                       if sqrt(dx^2+dy^2) < d
                       obj.UAVlog(i,1) = x1 + dx;
                       obj.UAVlog(i,2) = y1 + dy;
@@ -70,12 +69,27 @@ classdef UAVMANAGER < handle
                       if obj.UAVlog(i,7) == 0
                           obj.UAVlog(i,5) = 0;
                           obj.UAVlog(i,7) = 5;
+                          obj.UAVlog(i,3) = 120;
+                      end   
                       end
-                      
+                  else  
+                  d=((x2-x1)^2+(y2-y1)^2)^.5;
+                  dx = (100/1.8204)*(1/60)*(x2-x1)*obj.UAVlog(i,6)/d;
+                  dy = (100/1.8204)*(1/60)*(y2-y1)*obj.UAVlog(i,6)/d;
+                      if sqrt(dx^2+dy^2) < d
+                      obj.UAVlog(i,1) = x1 + dx;
+                      obj.UAVlog(i,2) = y1 + dy;
+                     else 
+                      obj.UAVlog(i,1) = x2;
+                      obj.UAVlog(i,2) = y2;
+                      obj.UAVlog(i,7) = obj.UAVlog(i,7)-1;
+                      if obj.UAVlog(i,7) == 0
+                          obj.UAVlog(i,5) = 0;
+                          obj.UAVlog(i,7) = 5;
+                      end                    
                   end
                   obj.UAVlog(i,3) = obj.UAVlog(i,3)-1;
-                 % if obj.UAVlog(i,3)*(100/1.8204)*(obj.UAVlog(i,6)/60);
-                  end 
+                  end
                 end
             end
         end
