@@ -35,13 +35,13 @@ for i=1:numUAVs
     speed(i,1)=35;% each UAV has a speed of 35 km/hr
     park(i,1) = 5; %each UAV parks at request zone for 5 minutes
 end
-    
-CayeyUAVManager = UAVMANAGER(x,y,batterylife,zone,requestID,speed,park);        
+
+SulawesiUAVManager = UAVMANAGER(x,y,batterylife,zone,requestID,speed,park);        
 
 %% Create UAV Request Manager
 maxrequest=100;
 log=[0,0,0,base(1,1),base(1,2),0,0];
-CayeyRequestManager = REQUESTMANAGER(log,maxrequest);
+SulawesiRequestManager = REQUESTMANAGER(log,maxrequest);
             
 %% Read in map for background of graph (use file name of image for map)
 % and plot the base location
@@ -58,19 +58,18 @@ for timeStep =1:lengthSimulation
     if r <= requestprob
       reqid=reqid+1;
       [expiry,zone] = newRequest(timeStep,zoneLocations)
-      CayeyRequestManager=CayeyRequestManager.addNewRequest(timeStep,expiry,zone,reqid)
-      [CayeyUAVManager,CayeyRequestManager]=CayeyUAVManager.assignUAVs(CayeyRequestManager,reqid,numUAVs);
+      SulawesiRequestManager=SulawesiRequestManager.addNewRequest(timeStep,expiry,zone,reqid)
+      [SulawesiUAVManager,SulawesiRequestManager]=SulawesiUAVManager.assignUAVs(SulawesiRequestManager,reqid,numUAVs);
     end
       
-   CayeyUAVManager=CayeyUAVManager.updateUAVpositions(CayeyRequestManager,numUAVs);
+   SulawesiUAVManager=SulawesiUAVManager.updateUAVpositions(SulawesiRequestManager,numUAVs);
     for k=1:numUAVs
-        xUAV(timeStep,k)=CayeyUAVManager.UAVlog(k, 1);
-        yUAV(timeStep,k)=CayeyUAVManager.UAVlog(k, 2);
+        xUAV(timeStep,k)=SulawesiUAVManager.UAVlog(k, 1);
+        yUAV(timeStep,k)=SulawesiUAVManager.UAVlog(k, 2);
     end
     for k=1:numUAVs
        plot(xUAV(:,k),yUAV(:,k),color(k))
        hold on
     end
-      pause(.05)
-    end
-
+      pause(.3)
+end
