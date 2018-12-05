@@ -49,46 +49,46 @@ classdef UAVMANAGER < handle
                   x2=RM.requestlog(obj.UAVlog(i,5),4); %x-coord of drop-off
                   y2=RM.requestlog(obj.UAVlog(i,5),5); % y-coord of drop off
                   x1= obj.UAVlog(i,1);  %x-coord of UAV
-                  y1= obj.UAVlog(i,2); % y-coord of UAV
-                  d=((x2-x1)^2+(y2-y1)^2)^.5;
-                  d2=((1050-x2)^2+(1700-y2)^2)^.5;
-                  d3=d+d2;
-                  if obj.UAVlog(i,3)*(100/1.8204)*(obj.UAVlog(i,6)/60) < d3
-                      x2=RM.requestlog(obj.UAVlog(i,5),8); 
-                      y2=RM.requestlog(obj.UAVlog(i,5),9);
-                      d=((x2-x1)^2+(y2-y1)^2)^.5;
-                      dx = (100/1.8204)*(1/60)*(x2-x1)*obj.UAVlog(i,6)/d;
-                      dy = (100/1.8204)*(1/60)*(y2-y1)*obj.UAVlog(i,6)/d;
-                      if sqrt(dx^2+dy^2) < d
-                      obj.UAVlog(i,1) = x1 + dx;
-                      obj.UAVlog(i,2) = y1 + dy;
-                     else 
-                      obj.UAVlog(i,1) = x2;
-                      obj.UAVlog(i,2) = y2;
-                      obj.UAVlog(i,7) = obj.UAVlog(i,7)-1;
-                      if obj.UAVlog(i,7) == 0
-                          obj.UAVlog(i,5) = 0;
-                          obj.UAVlog(i,7) = 5;
-                          obj.UAVlog(i,3) = 120;
+                  y1= obj.UAVlog(i,2); %y-coord of UAV
+                  d=((x2-x1)^2+(y2-y1)^2)^.5; %distance left to current request zone
+                  d2=((1050-x2)^2+(1700-y2)^2)^.5; %distance from current request zone to base
+                  d3=d+d2; %total distance to request zone and back to base
+                  if obj.UAVlog(i,3)*(100/1.8204)*(obj.UAVlog(i,6)/60) < d3 %UAV does not have enough battery to deliver and get back to base
+                      x2=RM.requestlog(obj.UAVlog(i,5),8); %x-coordinate of base
+                      y2=RM.requestlog(obj.UAVlog(i,5),9); %y-coordinate of base
+                      d=((x2-x1)^2+(y2-y1)^2)^.5; %distance left to base
+                      dx = (100/1.8204)*(1/60)*(x2-x1)*obj.UAVlog(i,6)/d; %distance to move in the x direction
+                      dy = (100/1.8204)*(1/60)*(y2-y1)*obj.UAVlog(i,6)/d; %distance to move in the y direction
+                      if sqrt(dx^2+dy^2) < d %The distance UAV will travel in one time step is less than total distance left
+                      obj.UAVlog(i,1) = x1 + dx; %update x-coord of UAV
+                      obj.UAVlog(i,2) = y1 + dy; %update y-coord of UAV
+                     else %The distance UAV will travel in one time step is greater than total distance left
+                      obj.UAVlog(i,1) = x2; %update x-coord of UAV to base coord
+                      obj.UAVlog(i,2) = y2; %update y-coord of UAV to base coord
+                      obj.UAVlog(i,7) = obj.UAVlog(i,7)-1; %Start park timer countdown
+                      if obj.UAVlog(i,7) == 0 %Park timer reaches 0
+                          obj.UAVlog(i,5) = 0; %Take away active request
+                          obj.UAVlog(i,7) = 5; %Reset park timer to 5 minutes
+                          obj.UAVlog(i,3) = 120; %Give UAV a new battery pack
                       end   
                       end
-                  else  
-                  d=((x2-x1)^2+(y2-y1)^2)^.5;
-                  dx = (100/1.8204)*(1/60)*(x2-x1)*obj.UAVlog(i,6)/d;
-                  dy = (100/1.8204)*(1/60)*(y2-y1)*obj.UAVlog(i,6)/d;
-                      if sqrt(dx^2+dy^2) < d
-                      obj.UAVlog(i,1) = x1 + dx;
-                      obj.UAVlog(i,2) = y1 + dy;
-                     else 
-                      obj.UAVlog(i,1) = x2;
-                      obj.UAVlog(i,2) = y2;
-                      obj.UAVlog(i,7) = obj.UAVlog(i,7)-1;
-                      if obj.UAVlog(i,7) == 0
-                          obj.UAVlog(i,5) = 0;
-                          obj.UAVlog(i,7) = 5;
+                  else  %UAV does have enough battery to deliver and get back to base
+                  d=((x2-x1)^2+(y2-y1)^2)^.5; %total distance left to request zone
+                  dx = (100/1.8204)*(1/60)*(x2-x1)*obj.UAVlog(i,6)/d; %distance to move in the x direction
+                  dy = (100/1.8204)*(1/60)*(y2-y1)*obj.UAVlog(i,6)/d; %distance to move in the y direction
+                      if sqrt(dx^2+dy^2) < d %The distance UAV will travel in one time step is less than total distance left
+                      obj.UAVlog(i,1) = x1 + dx; %update x-coord of UAV
+                      obj.UAVlog(i,2) = y1 + dy; %update y-coord of UAV
+                     else %The distance UAV will travel in one time step is greater than total distance left
+                      obj.UAVlog(i,1) = x2; %update x-coord of UAV to request zone coord
+                      obj.UAVlog(i,2) = y2; %update y-coord of UAV to request zone coord
+                      obj.UAVlog(i,7) = obj.UAVlog(i,7)-1; %Start park timer countdown
+                      if obj.UAVlog(i,7) == 0 %Park timer reaches 0
+                          obj.UAVlog(i,5) = 0; %Take away active request
+                          obj.UAVlog(i,7) = 5; %Reset park timer to 5 minutes
                       end                    
                   end
-                  obj.UAVlog(i,3) = obj.UAVlog(i,3)-1;
+                  obj.UAVlog(i,3) = obj.UAVlog(i,3)-1; %Battery level decreases by one unit per minute
                   end
                 end
             end
