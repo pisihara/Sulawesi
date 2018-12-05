@@ -4,7 +4,7 @@
 clear all; close all; format long;
 
 %% Parameters
-lengthSimulation=100;    % Number of time steps in minutes
+lengthSimulation=300;% Number of time steps in minutes
 requestprob=.7; % probability that a request occurs each minute
 numZones = 11;  % number of request zones
 base = [1050,1700];    % Location of the base (x,y) on the simulation map
@@ -25,17 +25,18 @@ zoneLocations = [1100 1470;
 color = ['y', 'c','m','b','r','w','k','g','y','c','m','b','r','w','k','g'];
 
 %% Create UAV Fleet 
-numUAVs = 3; % The number of UAV's in the fleet;
+numUAVs = 4; % The number of UAV's in the fleet;
 for i=1:numUAVs
     x(i,1)=base(1,1); %initially all UAVs are at the base
     y(i,1)=base(1,2);
-    batterylife(i,1)=600; %each UAV is fully charged (60 minute) 
+    batterylife(i,1)=120; %each UAV is fully charged (60 minute) 
     zone(i,1)=0;  % no UAV has been assigned a request yet
     requestID(i,1)=0;
-    speed(i,1)=35;  % each UAV has a speed of 35 km/hr
+    speed(i,1)=35;% each UAV has a speed of 35 km/hr
+    park(i,1) = 5; %each UAV parks at request zone for 5 minutes
 end
     
-CayeyUAVManager = UAVMANAGER(x,y,batterylife,zone,requestID,speed);        
+CayeyUAVManager = UAVMANAGER(x,y,batterylife,zone,requestID,speed,park);        
 
 %% Create UAV Request Manager
 maxrequest=100;
@@ -70,6 +71,6 @@ for timeStep =1:lengthSimulation
        plot(xUAV(:,k),yUAV(:,k),color(k))
        hold on
     end
-      pause(.1)
+      pause(.05)
     end
 
