@@ -43,7 +43,7 @@ classdef UAVMANAGER < handle
                    
                     end
                     else
-                        i=i+1;
+                        i=i+1; %Move to the next request
                     end
                 end
             end
@@ -59,7 +59,7 @@ classdef UAVMANAGER < handle
                   x1= obj.UAVlog(i,1);  %x-coord of UAV
                   y1= obj.UAVlog(i,2); %y-coord of UAV
                   d=((x2-x1)^2+(y2-y1)^2)^.5; %distance left to current request zone
-                  d2=((1050-x2)^2+(1700-y2)^2)^.5; %distance from current request zone to base
+                  d2=((RM.requestlog(obj.UAVlog(i,5),8)-x2)^2+(RM.requestlog(obj.UAVlog(i,5),9)-y2)^2)^.5; %distance from current request zone to base
                   d3=d+d2; %total distance to request zone and back to base
                   
                   if obj.UAVlog(i,3)*(100/1.8204)*(obj.UAVlog(i,6)/60) < d3 %UAV does not have enough battery to deliver and get back to base
@@ -99,13 +99,11 @@ classdef UAVMANAGER < handle
                    
                       
                       if obj.UAVlog(i,7) == 0 %Park timer reaches 0
-                          RM.requestlog(obj.UAVlog(i,5),6)= 1;
-                          RM.requestlog(obj.UAVlog(i,5),6)
-                          obj.UAVlog(i,5)
+                          RM.requestlog(obj.UAVlog(i,5),6)= 1; %Mark request as completed
                           obj.UAVlog(i,5) = 0; %Take away active request
                           obj.UAVlog(i,7) = 5; %Reset park timer to 5 minutes
                           
-                      end
+                     end
                   end
                   obj.UAVlog(i,3) = obj.UAVlog(i,3)-1; %Battery level decreases by one unit per minute
                   end
